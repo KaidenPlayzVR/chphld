@@ -8,7 +8,6 @@
 >
 
   <h2 style="margin-top:0">Chemp Physics Lua API Reference</h2>
-
   <p>Documentation for the XORWIRE Lua modding API.</p>
 
   <h2 style="margin-top:40px">LuaAPI</h2>
@@ -29,23 +28,17 @@
   <p>Logs a message to the ChempDebugger system.</p>
   <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>API.ChempDebuggerLog("Debug info")</code></pre>
 
-  <h3>GetGripValue</h3>
-  <p>Returns the grip input value (0–1) for the left or right hand.</p>
-  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local grip = API.GetGripValue(true)</code></pre>
+  <h3>GetGripValue / GetTriggerValue</h3>
+  <p>Returns the analog grip/trigger input value (0–1) for the left or right hand.</p>
+  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local grip = API.GetGripValue(true)
+local trigger = API.GetTriggerValue(false)</code></pre>
 
-  <h3>GetTriggerValue</h3>
-  <p>Returns the trigger input value (0–1) for the left or right hand.</p>
-  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local trigger = API.GetTriggerValue(false)</code></pre>
-
-  <h3>GetPrimaryButton</h3>
-  <p>Returns whether the primary button is pressed for left/right hand.</p>
+  <h3>GetPrimaryButton / GetSecondaryButton</h3>
+  <p>Returns whether the primary or secondary button is pressed for left/right hand.</p>
   <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>if API.GetPrimaryButton(true) then
     -- do something
-end</code></pre>
-
-  <h3>GetSecondaryButton</h3>
-  <p>Returns whether the secondary button is pressed for left/right hand.</p>
-  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>if API.GetSecondaryButton(false) then
+end
+if API.GetSecondaryButton(false) then
     -- do something
 end</code></pre>
 
@@ -53,36 +46,94 @@ end</code></pre>
   <p>Sends haptic feedback to a controller.</p>
   <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>API.SendHaptic(true, 0.2, 0.5)</code></pre>
 
-  <h3>SetActive</h3>
-  <p>Activates or deactivates a <code>GameObjectWrapper</code>.</p>
+  <h3>SetActive / DestroyObject / SetTag</h3>
+  <p>Activate, destroy, or set the tag of a GameObjectWrapper.</p>
   <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local obj = API.GetObject("Platform")
-API.SetActive(true, obj)</code></pre>
-
-  <h3>DestroyObject</h3>
-  <p>Destroys a <code>GameObjectWrapper</code>.</p>
-  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local enemy = API.GetObject("Enemy")
-API.DestroyObject(enemy)</code></pre>
-
-  <h3>SetTag</h3>
-  <p>Sets the tag of a <code>GameObjectWrapper</code>.</p>
-  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>API.SetTag("Interactable", obj)</code></pre>
+API.SetActive(true, obj)
+API.SetTag("Interactable", obj)
+API.DestroyObject(obj)</code></pre>
 
   <h3>GetObjectByTag</h3>
-  <p>Returns a list of <code>GameObjectWrapper</code> objects matching the tag.</p>
+  <p>Returns a list of <code>GameObjectWrapper</code> objects with the specified tag.</p>
   <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local enemies = API.GetObjectByTag("Enemy")
 for i, enemy in ipairs(enemies) do
     enemy:GetTransform():SetPosition(0, 1, 0)
 end</code></pre>
 
-  <h3>GetPhysRig</h3>
-  <p>Returns the physics rig as a <code>GameObjectWrapper</code>.</p>
-  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local rig = API.GetPhysRig()</code></pre>
-
-  <h3>GetMainCamera</h3>
-  <p>Returns the main camera as a <code>GameObjectWrapper</code>.</p>
-  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local cam = API.GetMainCamera()</code></pre>
+  <h3>GetPhysRig / GetMainCamera</h3>
+  <p>Returns the physics rig or main camera as a <code>GameObjectWrapper</code>.</p>
+  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local rig = API.GetPhysRig()
+local cam = API.GetMainCamera()</code></pre>
 
   <h3>CreatePrimitiveObject</h3>
-  <p>Creates a primitive GameObject and returns a <code>GameObjectWrapper</code>.</p>
+  <p>Creates a primitive object (<code>Cube</code>, <code>Sphere</code>, etc.) and returns a <code>GameObjectWrapper</code>.</p>
   <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local cube = API.CreatePrimitiveObject("Cube")
 cube:GetTransform():SetPosition(0, 2, 0)</code></pre>
+
+  <h3>GetRigidbody / AddRigidbody</h3>
+  <p>Get or add a RigidbodyWrapper to a GameObjectWrapper.</p>
+  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local rb = API.GetRigidbody(obj)
+local rb2 = API.AddRigidbody(obj)</code></pre>
+
+  <h3>RigidbodyWrapper Methods</h3>
+  <p>Methods for manipulating rigidbodies.</p>
+  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>rb:SetVelocity(0, 10, 0)
+rb:AddForce(0, 5, 0)
+rb:SetKinematic(true)
+rb:SetUseGravity(false)
+rb:MakeGrabbable(true)</code></pre>
+
+  <h2 style="margin-top:40px">TransformWrapper</h2>
+  <p>Wraps a Transform and allows getting/setting position, rotation, scale, and LookAt.</p>
+  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local pos = transform:GetPos()
+transform:SetPosition(1, 2, 3)
+transform:LookAt(target)</code></pre>
+
+  <h2 style="margin-top:40px">GameObjectWrapper</h2>
+  <p>Wraps a GameObject and allows accessing its Transform and name.</p>
+  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local t = obj:GetTransform()
+local name = obj:GetName()
+obj:SetName("NewName")</code></pre>
+
+  <h2 style="margin-top:40px">Vector3Wrapper</h2>
+  <p>Wraps a Vector3 for easy get/set of X, Y, Z and conversion to Unity Vector3.</p>
+  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>local x = vec:GetX()
+vec:SetY(5)
+local v3 = vec:ToVector3()</code></pre>
+
+  <h2 style="margin-top:40px">RigidbodyWrapper</h2>
+  <p>Wraps a Rigidbody for Lua access.</p>
+  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>rb:SetVelocity(1,0,0)
+rb:AddForce(0,5,0)
+rb:SetKinematic(true)
+rb:SetUseGravity(false)
+rb:MakeGrabbable(true)</code></pre>
+
+    <h2 style="margin-top:40px">We also support some native Unity types</h2>
+  <p>See below</p>
+  <pre style="background:#0f0f0f;padding:16px;border-radius:12px"><code>We support the following:
+          UserData.RegisterType<GameObject>();
+        UserData.RegisterType<Transform>();
+        UserData.RegisterType<Rigidbody>();
+        UserData.RegisterType<Vector3>();
+        UserData.RegisterType<Quaternion>();
+        UserData.RegisterType<Color>();
+        UserData.RegisterType<Collider>();
+        UserData.RegisterType<Renderer>();
+        UserData.RegisterType<Camera>();
+        UserData.RegisterType<Light>();
+        UserData.RegisterType<AudioSource>();
+        UserData.RegisterType<Mathf>();
+        UserData.RegisterType<Time>();
+        UserData.RegisterType<Physics>();
+        UserData.RegisterType<RaycastHit>();
+        UserData.RegisterType<Ray>();
+        UserData.RegisterType<LayerMask>();</code></pre>
+
+  <p style="margin-top:32px">
+    That’s all!<br>
+    Visit <a href="https://discord.gg/xorwire/" style="color:#4da6ff">https://discord.gg/xorwire/</a>
+    to suggest new API features.
+  </p>
+
+</div>
